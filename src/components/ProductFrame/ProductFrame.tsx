@@ -1,6 +1,6 @@
 import Product from './Product/Product';
 import './ProductFrame.scss';
-import products from '../../../public/products.json';
+import products from './products.json';
 
 interface ProductFrameProps {}
 
