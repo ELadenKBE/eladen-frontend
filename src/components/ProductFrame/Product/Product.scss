@@ -1,0 +1,12 @@
+.product {
+  width: 536px;
+  height: 217px;
+  display: flex;
+  .product-image {
+    width: 182px;
+    height: 190px;
+  }
+  .product-description {
+    width: 234px;
+  }
+}
