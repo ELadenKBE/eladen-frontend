@@ -1,15 +1,15 @@
-import './Navbar.scss';
-import { Dispatch, SetStateAction } from 'react';
+import "./Navbar.scss";
+import { Dispatch, SetStateAction } from "react";
 import {
-  FiSidebar,
   FiShoppingCart,
   FiGlobe,
   FiMoon,
   FiUser,
-  FiHome,
-} from 'react-icons/fi';
-import Searchbar from './Searchbar/Searchbar';
-import NavItem from './NavItem/NavItem';
+  FiMenu,
+} from "react-icons/fi";
+import Searchbar from "./Searchbar/Searchbar";
+import NavItem from "./NavItem/NavItem";
+import { IconType } from "react-icons";
 
 interface NavbarProps {
   isLoginFormRendered: boolean;
@@ -17,80 +17,96 @@ interface NavbarProps {
   isSidebarRendered: boolean;
   setIsSidebarRendered: Dispatch<SetStateAction<boolean>>;
 }
-interface INavItem {
-  icon?: React.ComponentType;
-  onClick?: () => void;
+interface NavItemConfig {
+  icon?: IconType;
   url?: string;
   component?: React.ReactNode;
   classname: string;
 }
+/**
+ * Renders a Navbar containing NavItems
+ * @param isLoginFormRendered if the login form is rendered
+ * @param setIsLoginFormRendered set if the loginform should be rendered or not 
+ * @param isSidebarRendered if the sidebar is rendered
+ * @param setIsSidebarRendered set if the sidebar should be rendered or not
 
+ * @returns NavItems
+ */
 const Navbar = ({
   isLoginFormRendered,
   setIsLoginFormRendered,
   isSidebarRendered,
   setIsSidebarRendered,
 }: NavbarProps) => {
-  const handleItemClick = (componentName: string | null): void => {
-    if (componentName === 'sidebar') {
-      setIsSidebarRendered(!isSidebarRendered);
-    } else if (componentName === 'login') {
-      setIsLoginFormRendered(!isLoginFormRendered);
-    } else {
-      setIsSidebarRendered(false);
-      setIsLoginFormRendered(false);
-    }
-  };
-  const navItems: INavItem[] = [
+  const navItems: NavItemConfig[] = [
     {
-      icon: FiSidebar,
-      onClick: () => handleItemClick('sidebar'),
-      classname: 'sidebar',
+      icon: FiMenu,
+      classname: "sidebar",
     },
     {
-      icon: FiHome,
-      onClick: () => handleItemClick(null),
-      url: '/',
-      classname: 'logo',
+      url: "/",
+      classname: "logo",
     },
-    { component: <Searchbar />, classname: 'searchbar' },
+    { component: <Searchbar />, classname: "searchbar" },
     {
       icon: FiGlobe,
-      onClick: () => handleItemClick(null),
-      classname: 'language',
+      classname: "language",
     },
     {
       icon: FiMoon,
-      onClick: () => handleItemClick(null),
-      classname: 'darkmode',
+      classname: "darkmode",
     },
     {
       icon: FiUser,
-      onClick: () => handleItemClick('login'),
-      classname: 'login',
+      classname: "login",
     },
     {
       icon: FiShoppingCart,
-      onClick: () => handleItemClick(null),
-      url: '/cart',
-      classname: 'cart',
+      url: "/cart",
+      classname: "cart",
     },
   ];
 
   return (
     <nav className="navbar">
-      <ul className="navitem-container">
-        {navItems.map((navItem, index) => (
+      <div className="navbar-left">
+        {navItems.slice(0, 2).map((item, index) => (
           <NavItem
             key={index}
-            onClick={navItem.onClick}
-            url={navItem.url}
-            icon={navItem.icon}
-            classname={navItem.classname}
-            component={navItem.component}
+            icon={item.icon}
+            url={item.url}
+            classname={item.classname}
+            isLoginFormRendered={isLoginFormRendered}
+            setIsLoginFormRendered={setIsLoginFormRendered}
+            isSidebarRendered={isSidebarRendered}
+            setIsSidebarRendered={setIsSidebarRendered}
           />
         ))}
-      </ul>
+      </div>
+      <div className="navbar-center">
+        <NavItem
+          component={navItems[2].component}
+          classname={navItems[2].classname}
+          isLoginFormRendered={isLoginFormRendered}
+          setIsLoginFormRendered={setIsLoginFormRendered}
+          isSidebarRendered={isSidebarRendered}
+          setIsSidebarRendered={setIsSidebarRendered}
+        />
+      </div>
+      <div className="navbar-right">
+        {navItems.slice(3).map((item, index) => (
+          <NavItem
+            key={index}
+            icon={item.icon}
+            url={item.url}
+            classname={item.classname}
+            isLoginFormRendered={isLoginFormRendered}
+            setIsLoginFormRendered={setIsLoginFormRendered}
+            isSidebarRendered={isSidebarRendered}
+            setIsSidebarRendered={setIsSidebarRendered}
+          />
+        ))}
+      </div>
     </nav>
   );
 };

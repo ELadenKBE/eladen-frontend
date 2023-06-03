@@ -1,0 +1,21 @@
+.searchbar-container {
+  .searchbar {
+    width: 900px;
+    height: 42px;
+    background-color: #f1ebff;
+    position: relative;
+    border-radius: 20px;
+
+    .searchbutton {
+      width: 64px;
+      height: 42px;
+      background-color: #1946b8;
+      position: absolute;
+      right: 0;
+      border-radius: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+}

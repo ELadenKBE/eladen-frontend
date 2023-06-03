@@ -1,8 +1,26 @@
-.navitem-container {
-  height: 112px;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
+.navbar {
+  width: 100%;
+  height: 42px;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  gap: 120px;
   margin: 0;
   padding: 0;
+  list-style: none;
+  align-items: center;
+  .navbar-left,
+  .navbar-right {
+    display: flex;
+    align-items: center;
+  }
+
+  .navbar-left,
+  .navbar-center,
+  .navbar-right {
+    width: fit-content;
+  }
+
+  .navbar-right {
+    justify-self: end;
+  }
 }
