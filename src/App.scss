@@ -1,9 +1,11 @@
+
+
 .app-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  margin: 30px;
   .content-container {
     flex: 1;
+    margin: 30px;
   }
 }

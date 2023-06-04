@@ -1,0 +1,10 @@
+.footer-item {
+  color: #fff;
+  font-size: 14px;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

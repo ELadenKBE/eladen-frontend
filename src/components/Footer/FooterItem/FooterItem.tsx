@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import './FooterItemProps.scss';
+import './FooterItem.scss';
 
 interface FooterItemProps {
   label: string;
@@ -26,12 +26,14 @@ const FooterItem: React.FC<FooterItemProps> = ({
         href={url}
         target="_blank"
         rel="noopener noreferrer"
-        className="footer-item-external"
+        className={`footer-item footer-item-${classname}`}
       >
         {label}
       </a>
     ) : (
-      <Link to={url}>{label} </Link>
+      <Link to={url} className={`footer-item footer-item-${classname}`}>
+        {label}{' '}
+      </Link>
     )
   ) : (
     label
