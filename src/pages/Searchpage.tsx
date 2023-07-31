@@ -1,7 +1,11 @@
+import { useParams } from 'react-router-dom';
+
 interface SearchpageProps {}
 
 const Searchpage = ({}: SearchpageProps) => {
-  return <>Searchpage</>;
+  const { query } = useParams();
+
+  return <>{query}</>;
 };
 
 export default Searchpage;

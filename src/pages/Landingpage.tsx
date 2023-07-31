@@ -5,17 +5,24 @@ import ProductFrame from '../components/ProductFrame/ProductFrame';
 interface LandingpageProps {
   isLoginFormRendered: boolean;
   isSidebarRendered: boolean;
+  subToken: string;
 }
 
 const Landingpage = ({
   isLoginFormRendered,
   isSidebarRendered,
+  
 }: LandingpageProps) => {
+  
+
+  
+
   return (
     <>
       {isSidebarRendered && <Sidebar />}
       {isLoginFormRendered && <LoginForm />}
-      <ProductFrame />
+        <ProductFrame />
+  
     </>
   );
 };

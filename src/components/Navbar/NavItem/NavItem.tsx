@@ -1,11 +1,12 @@
-import { IconType } from "react-icons";
-import "./NavItem.scss";
-import { Link } from "react-router-dom";
-import { Dispatch, SetStateAction } from "react";
+import { IconType } from 'react-icons';
+import './NavItem.scss';
+import { Link } from 'react-router-dom';
+import { Dispatch, SetStateAction } from 'react';
 
 interface NavItemProps {
   url?: string;
   icon?: IconType;
+  imgsrc?: string;
   classname: string;
   component?: React.ReactNode;
   isLoginFormRendered: boolean;
@@ -18,6 +19,7 @@ interface NavItemProps {
  * Renders a NavItem that can be another component, a link, or just an icon
  * @param url given when it redirects to another page
  * @param icon  given when it displays an icon
+ * @param imgsrc  for the base64 data of the logo
  * @param classname the classname of the NavItem
  * @param component given when it renders a component
  * @param isLoginFormRendered if the login form is rendered
@@ -29,6 +31,7 @@ interface NavItemProps {
 const NavItem = ({
   url,
   icon: Icon,
+  imgsrc,
   classname,
   component,
   isLoginFormRendered,
@@ -41,9 +44,9 @@ const NavItem = ({
    * @param classname to match the correct component
    */
   const handleClick = (classname: string): void => {
-    if (classname === "sidebar") {
+    if (classname === 'sidebar') {
       setIsSidebarRendered(!isSidebarRendered);
-    } else if (classname === "login") {
+    } else if (classname === 'login') {
       setIsLoginFormRendered(!isLoginFormRendered);
     }
   };
@@ -52,8 +55,15 @@ const NavItem = ({
       onClick={() => handleClick(classname)}
       className={`navitem navitem-${classname}`}
     >
-      {url ? (
-        <Link to={url}>{Icon && <Icon size={31} color="black" />}</Link>
+      {url && imgsrc ? (
+        <Link to={url}>
+          <img src={imgsrc} alt="logo" />
+        </Link>
+      ) : url ? (
+        <Link to={url}>
+          {Icon && <Icon color="black" size={31} />}
+          {component}
+        </Link>
       ) : (
         <>
           {Icon && <Icon color="black" size={31} />}
