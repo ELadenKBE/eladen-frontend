@@ -2,21 +2,34 @@ import LoginForm from '../components/Navbar/LoginForm/LoginForm';
 import Sidebar from '../components/Navbar/Sidebar/Sidebar';
 import ProductFrame from '../components/ProductFrame/ProductFrame';
 
+interface Product {
+  id: number;
+  description: string;
+  price: string;
+  image: string;
+}
+
+type PriceRange = {
+  min: number;
+  max: number;
+};
+
 interface LandingpageProps {
   isLoginFormRendered: boolean;
   isSidebarRendered: boolean;
   subToken: string;
-  cartProducts: any;
-  setCartProducts: any;
-  availability: any;
-  priceRange: any;
-  setPriceRange: any;
-  setAvailability: any;
-  isSorted:any;
-  setIsSorted:any;
+  cartProducts: Product[];
+  setCartProducts: React.Dispatch<React.SetStateAction<Product[]>>;
+  availability: boolean;
+  priceRange: PriceRange;
+  setPriceRange: React.Dispatch<React.SetStateAction<PriceRange>>;
+  setAvailability: React.Dispatch<React.SetStateAction<boolean>>;
+  isSorted: string;
+  setIsSorted: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Landingpage = ({
+// Landingpage component
+const Landingpage: React.FC<LandingpageProps> = ({
   isLoginFormRendered,
   cartProducts,
   setCartProducts,
@@ -25,10 +38,11 @@ const Landingpage = ({
   setPriceRange,
   setAvailability,
   isSorted,
-  setIsSorted
+  setIsSorted,
 }: LandingpageProps) => {
   return (
     <>
+      {/* Sidebar component */}
       <Sidebar
         setAvailability={setAvailability}
         setPriceRange={setPriceRange}
@@ -37,7 +51,11 @@ const Landingpage = ({
         isSorted={isSorted}
         setIsSorted={setIsSorted}
       />
+
+      {/* Conditionally render the LoginForm */}
       {isLoginFormRendered && <LoginForm />}
+
+      {/* ProductFrame component */}
       <ProductFrame
         cartProducts={cartProducts}
         setCartProducts={setCartProducts}

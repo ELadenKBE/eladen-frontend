@@ -1,14 +1,16 @@
-
+$content-container-margin: 30px;
+$content-container-gap: 30px;
 
 .app-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+
   .content-container {
     flex: 1;
-    margin: 30px;
+    margin: $content-container-margin;
     display: flex;
     justify-content: center;
-    gap: 30px;
+    gap: $content-container-gap;
   }
 }

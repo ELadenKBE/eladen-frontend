@@ -1,13 +1,20 @@
+$sidebar-margin-top: 5px;
+
 .sidebar {
   .sidebar-prices,
-  .sidebar-sorting {
+  .sidebar-sorting,
+  .sidebar-availability {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
 
+    h2 {
+      align-self: start;
+    }
+
     label {
-      margin-top: 5px;
+      margin-top: $sidebar-margin-top;
       align-self: flex-start;
     }
   }

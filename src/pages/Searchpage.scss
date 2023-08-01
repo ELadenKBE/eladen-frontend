@@ -1,10 +1,13 @@
+$searchpage-product-grid-columns: 3;
+$searchpage-product-grid-gap: 50px;
+
 .searchpage {
   display: flex;
 
   .searchpage-products {
     display: grid;
-    gap: 50px;
+    gap: $searchpage-product-grid-gap;
     justify-items: center;
-    grid-template-columns: repeat(3,1fr);
+    grid-template-columns: repeat($searchpage-product-grid-columns, 1fr);
   }
 }

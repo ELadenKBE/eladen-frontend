@@ -10,19 +10,23 @@ interface Product {
   price: string;
   image: string;
 }
+type PriceRange = {
+  min: number;
+  max: number;
+};
 
 interface SearchpageProps {
-  cartProducts: any;
-  setCartProducts: any;
-  availability: any;
-  priceRange: any;
-  setPriceRange: any;
-  setAvailability: any;
-  isSorted: string; // Can be 'ascending' or 'descending'
-  setIsSorted: (value: string) => void;
+  cartProducts: Product[];
+  setCartProducts: React.Dispatch<React.SetStateAction<Product[]>>;
+  availability: boolean;
+  priceRange: PriceRange;
+  setPriceRange: React.Dispatch<React.SetStateAction<PriceRange>>;
+  setAvailability: React.Dispatch<React.SetStateAction<boolean>>;
+  isSorted: string;
+  setIsSorted: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Searchpage = ({
+const Searchpage: React.FC<SearchpageProps> = ({
   cartProducts,
   setCartProducts,
   availability,
@@ -32,12 +36,13 @@ const Searchpage = ({
   isSorted,
   setIsSorted,
 }: SearchpageProps) => {
+  // Function to handle adding a product to the cart
   const handleAddToCart = (product: Product) => {
     setCartProducts([...cartProducts, product]);
   };
 
   const { query } = useParams();
-  const searchTerm = query!.toLowerCase(); // Convert the search term to lowercase for case-insensitive matching.
+  const searchTerm = query?.toLowerCase() || ''; // Convert the search term to lowercase for case-insensitive matching.
 
   // Filter products based on the search term and price range
   const filteredProducts = productsJson.filter((product: Product) => {
@@ -91,10 +96,8 @@ const Searchpage = ({
           <ProductInfo
             key={product.id}
             product={product}
-            quantity={1} // Set the initial quantity to 1 (you can change this as needed)
-            onQuantityChange={() => {
-              // Handle quantity change if needed
-            }}
+            quantity={1}
+            onQuantityChange={() => {}}
             cartView={false}
             onAddToCart={() => handleAddToCart(product)}
             isAddedToCart={cartProducts.some(

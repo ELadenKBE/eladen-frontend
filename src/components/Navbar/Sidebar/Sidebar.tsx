@@ -1,36 +1,43 @@
 import './Sidebar.scss';
+import React, { ChangeEvent } from 'react';
 
-interface SidebarProps {
-  availability: any;
-  priceRange: any;
-  setAvailability: any;
-  setPriceRange: any;
-  isSorted: any;
-  setIsSorted: any;
+interface PriceRange {
+  min: number;
+  max: number;
 }
 
-const Sidebar = ({
+interface SidebarProps {
+  availability: boolean;
+  priceRange: PriceRange;
+  setAvailability: (availability: boolean) => void;
+  setPriceRange: (priceRange: PriceRange) => void;
+  isSorted: string;
+  setIsSorted: (isSorted: 'ascending' | 'descending') => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({
   setAvailability,
   setPriceRange,
   availability,
   priceRange,
   isSorted,
   setIsSorted,
-}: SidebarProps) => {
-  const handleAvailabilityChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+}) => {
+  // Function to handle changes in the "Availability" checkbox
+  const handleAvailabilityChange = (event: ChangeEvent<HTMLInputElement>) => {
     setAvailability(event.target.checked);
   };
 
-  const convertPrices = (priceRangeString: string) => {
+  // Function to convert the price range string to an object with min and max values
+  const convertPrices = (priceRangeString: string): PriceRange => {
     const [min, max] = priceRangeString
       .split('-')
       .map((price) => parseFloat(price));
     return { min, max };
   };
 
-  const isPriceRangeSelected = (value: string) => {
+  // Function to check if a particular price range is selected
+  const isPriceRangeSelected = (value: string): boolean => {
     const selectedPriceRange = convertPrices(value);
     return (
       selectedPriceRange.min === priceRange.min &&
@@ -38,11 +45,10 @@ const Sidebar = ({
     );
   };
 
-  const handlePriceRangeChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  // Function to handle changes in the "Price Range" checkboxes
+  const handlePriceRangeChange = (event: ChangeEvent<HTMLInputElement>) => {
     const selectedPriceRange = convertPrices(event.target.value);
-    // If the checkbox is checked, set the price range, otherwise, reset it to null.
+    // If the checkbox is checked, set the price range; otherwise, reset it to the default range.
     setPriceRange(
       event.target.checked ? selectedPriceRange : { min: 0, max: 100000 },
     );
@@ -50,18 +56,19 @@ const Sidebar = ({
 
   return (
     <div className="sidebar">
-      <h2>Verfügbarkeit:</h2>
-      <label>
-        <input
-          type="checkbox"
-          checked={availability}
-          onChange={handleAvailabilityChange}
-        />
-        Im Lager
-      </label>
-
-      <h2>Preis:</h2>
+      <div className="sidebar-availability">
+        <h2>Verfügbarkeit:</h2>
+        <label>
+          <input
+            type="checkbox"
+            checked={availability}
+            onChange={handleAvailabilityChange}
+          />
+          Im Lager
+        </label>
+      </div>
       <div className="sidebar-prices">
+        <h2>Preis:</h2>
         <label>
           <input
             type="checkbox"
@@ -104,8 +111,8 @@ const Sidebar = ({
         </label>
       </div>
 
-      <h2>Sortierung:</h2>
       <div className="sidebar-sorting">
+        <h2>Sortierung:</h2>
         <label>
           <input
             type="radio"

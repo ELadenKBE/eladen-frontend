@@ -3,13 +3,7 @@ import LoginForm from '../Navbar/LoginForm/LoginForm';
 import './Footer.scss';
 import FooterItem from './FooterItem/FooterItem';
 
-interface FooterProps {
-  isLoginFormRendered: boolean;
-  setIsLoginFormRendered: Dispatch<SetStateAction<boolean>>;
-  isSidebarRendered: boolean;
-  setIsSidebarRendered: Dispatch<SetStateAction<boolean>>;
-}
-
+// Interface for each footer item
 interface IFooterItem {
   label: string;
   component?: React.ReactNode;
@@ -19,12 +13,22 @@ interface IFooterItem {
   classname: string;
 }
 
-const Footer = ({
+// Props interface for the Footer component
+interface FooterProps {
+  isLoginFormRendered: boolean;
+  setIsLoginFormRendered: Dispatch<SetStateAction<boolean>>;
+  isSidebarRendered: boolean;
+  setIsSidebarRendered: Dispatch<SetStateAction<boolean>>;
+}
+
+// Footer component
+const Footer: React.FC<FooterProps> = ({
   isLoginFormRendered,
   setIsLoginFormRendered,
   isSidebarRendered,
   setIsSidebarRendered,
-}: FooterProps) => {
+}) => {
+  // Function to handle clicks on footer items
   const handleItemClick = (componentName: string | null): void => {
     if (componentName === 'sidebar') {
       setIsSidebarRendered(!isSidebarRendered);
@@ -36,6 +40,7 @@ const Footer = ({
     }
   };
 
+  // Array of footer items
   const footerItems: IFooterItem[] = [
     {
       label: 'Einloggen',
@@ -84,4 +89,5 @@ const Footer = ({
     </footer>
   );
 };
+
 export default Footer;

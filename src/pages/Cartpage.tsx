@@ -2,6 +2,7 @@ import { useState } from 'react';
 import './Cartpage.scss';
 import ProductInfo from '../components/ProductInfo/ProductInfo';
 
+// Define the type for the product
 interface Product {
   id: number;
   description: string;
@@ -9,39 +10,46 @@ interface Product {
   image: string;
 }
 
+// Define the type for the CartpageProps
 interface CartpageProps {
   cartProducts: Product[];
   onRemoveFromCart: (id: number) => void;
-  setCartProducts: any;
+  setCartProducts: React.Dispatch<React.SetStateAction<Product[]>>;
 }
 
-const Cartpage = ({
+const Cartpage: React.FC<CartpageProps> = ({
   cartProducts,
   onRemoveFromCart,
   setCartProducts,
 }: CartpageProps) => {
-  const parsePrice = (priceString: string) => {
+  // Function to parse the price from a string
+  const parsePrice = (priceString: string): number => {
     const numericString = priceString.replace(/€/g, '').replace(/,/g, '.');
     return parseFloat(numericString);
   };
 
+  // State to manage the quantity of each product in the cart
   const [quantity, setQuantity] = useState<number[]>(cartProducts.map(() => 1));
 
-  const handleQuantityChange = (index: number, value: number) => {
+  // Function to handle quantity change for a product
+  const handleQuantityChange = (index: number, value: number): void => {
     const newQuantity = [...quantity];
     newQuantity[index] = value;
     setQuantity(newQuantity);
   };
 
+  // Calculate the total price of all products in the cart
   const totalPrice = cartProducts.reduce(
     (total, product, index) =>
       total + parsePrice(product.price) * quantity[index],
     0,
   );
 
-  const handlePayment = () => {
+  // Function to handle the payment and clear the cart
+  const handlePayment = (): void => {
     setCartProducts([]);
   };
+
   return (
     <div className="cartpage">
       <div className="cart-product-container">

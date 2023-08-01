@@ -20,11 +20,11 @@ import Register from './components/Register/Register';
 import Product from './components/ProductFrame/Product/Product';
 
 // Define a type for the initialization options
-type KeycloakConfig = {
+interface KeycloakConfig {
   url: string;
   realm: string;
   clientId: string;
-};
+}
 
 const keycloakConfig: KeycloakConfig = {
   url: 'http://localhost:8080/auth/',
@@ -38,26 +38,36 @@ interface Product {
   price: string;
   image: string;
 }
-function App() {
+type PriceRange = {
+  min: number;
+  max: number;
+};
+
+function App(): JSX.Element {
   const [isLoginFormRendered, setLoginFormRendered] = useState<boolean>(false);
   const [isSidebarRendered, setIsSidebarRendered] = useState<boolean>(false);
-  const [keycloak, setKeycloak] = useState<Keycloak.KeycloakInstance | null>(
-    null,
-  );
+  const [keycloak, setKeycloak] = useState<Keycloak | null>(null);
   const [authenticated, setAuthenticated] = useState<boolean>(false);
   const [subToken, setSubToken] = useState<string>('');
   const [registrationCompleted, setRegistrationCompleted] =
-    useState<boolean>(false); // State for registration completion
+    useState<boolean>(false);
   const [cartProducts, setCartProducts] = useState<Product[]>([]);
-  const [availability, setAvailability] = useState(false);
-  const [priceRange, setPriceRange] = useState({ min: 0, max: 100000 });
-  const [isSorted, setIsSorted] = useState("ascending");
+  const [availability, setAvailability] = useState<boolean>(false);
+  const [priceRange, setPriceRange] = useState<PriceRange>({
+    min: 0,
+    max: 100000,
+  });
+  const [isSorted, setIsSorted] = useState<string>('ascending');
+
+  // Function to handle removing a product from the cart
   const handleRemoveFromCart = (productId: number) => {
     setCartProducts(cartProducts.filter((product) => product.id !== productId));
   };
-  const parseJwt = (token: any) => {
+
+  // Function to parse JWT token
+  const parseJwt = (token: string | undefined) => {
     try {
-      return JSON.parse(atob(token.split('.')[1]));
+      return token ? JSON.parse(atob(token.split('.')[1])) : null;
     } catch (e) {
       return null;
     }
@@ -70,10 +80,10 @@ function App() {
         setKeycloak(kc);
         setAuthenticated(auth);
         const jwtToken = parseJwt(kc.token);
-        setSubToken(jwtToken.sub);
+        setSubToken(jwtToken?.sub || '');
       })
       .catch(() => {
-        window.alert('Could not initialize Keycloak');
+        console.log('Keycloak konnte nicht initialisiert werden.');
       });
   }, []);
 
@@ -182,7 +192,7 @@ function App() {
     );
   }
 
-  return <p>Initializing Keycloak...</p>;
+  return <p>Initialisiere Keycloak...</p>;
 }
 
 export default App;

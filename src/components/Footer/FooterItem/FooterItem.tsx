@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import './FooterItem.scss';
 
+// Interface for the FooterItem component props
 interface FooterItemProps {
   label: string;
   url?: string;
@@ -9,17 +10,20 @@ interface FooterItemProps {
   classname: string;
 }
 
+// FooterItem component
 const FooterItem: React.FC<FooterItemProps> = ({
   label,
   url,
   externalLink,
   onClick,
   classname,
-}: FooterItemProps) => {
+}) => {
+  // Function to handle clicks on footer items
   const handleClick = (): void => {
     onClick && onClick();
   };
 
+  // Determine the content based on whether the item has a URL or not
   const content: React.ReactNode = url ? (
     externalLink ? (
       <a
@@ -32,7 +36,7 @@ const FooterItem: React.FC<FooterItemProps> = ({
       </a>
     ) : (
       <Link to={url} className={`footer-item footer-item-${classname}`}>
-        {label}{' '}
+        {label}
       </Link>
     )
   ) : (

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import './Product.scss';
 
 interface ProductProps {
@@ -10,19 +10,26 @@ interface ProductProps {
   isAddedToCart: boolean;
 }
 
-const Product = ({
+const Product: React.FC<ProductProps> = ({
   description,
   price,
   image,
   onAddToCart,
   isAddedToCart,
 }: ProductProps) => {
+  // State to track whether the product is being hovered
   const [isHovered, setIsHovered] = useState(false);
 
+  /**
+   * Handles the hover event on the product
+   */
   const handleHover = () => {
     setIsHovered(true);
   };
 
+  /**
+   * Handles the mouse leave event on the product
+   */
   const handleMouseLeave = () => {
     setIsHovered(false);
   };
@@ -35,7 +42,7 @@ const Product = ({
     >
       {isHovered && !isAddedToCart && (
         <button className="add-to-cart-button" onClick={onAddToCart}>
-          In den Warenkorb
+          Warenkorb
         </button>
       )}
       <div className="product-info">

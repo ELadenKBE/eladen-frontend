@@ -1,14 +1,15 @@
+import React from 'react';
 import Product from './Product/Product';
 import './ProductFrame.scss';
 import productsJson from './products.json';
 
 interface ProductFrameProps {
-  cartProducts: any;
-  setCartProducts: any;
-  priceRange: any;
-  availability: any;
+  cartProducts: Product[];
+  setCartProducts: React.Dispatch<React.SetStateAction<Product[]>>;
+  priceRange: { min: number | null; max: number | null };
+  availability: boolean;
   isSorted: string; // Can be 'ascending' or 'descending'
-  setIsSorted: (value: string) => void;
+  setIsSorted: (value: 'ascending' | 'descending') => void;
 }
 
 interface Product {
@@ -18,16 +19,21 @@ interface Product {
   image: string;
 }
 
-const ProductFrame = ({
+const ProductFrame: React.FC<ProductFrameProps> = ({
   cartProducts,
   setCartProducts,
   priceRange,
   isSorted,
 }: ProductFrameProps) => {
+  /**
+   * Adds a product to the cart
+   * @param product The product to be added to the cart
+   */
   const handleAddToCart = (product: Product) => {
     setCartProducts([...cartProducts, product]);
   };
 
+  // Filter products based on the price range
   const filteredProducts = productsJson.filter((product) => {
     const productPrice = parseFloat(
       product.price.replace(/€/g, '').replace(/,/g, '.'),
@@ -65,9 +71,7 @@ const ProductFrame = ({
           price={product.price}
           image={product.image}
           onAddToCart={() => handleAddToCart(product)}
-          isAddedToCart={cartProducts.some(
-            (item: Product) => item.id === product.id,
-          )}
+          isAddedToCart={cartProducts.some((item) => item.id === product.id)}
         />
       ))}
     </div>

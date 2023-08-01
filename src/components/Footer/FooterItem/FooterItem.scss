@@ -7,4 +7,9 @@
   &:hover {
     text-decoration: underline;
   }
+
+  @media screen and (max-width: 768px) {
+    padding: 5px;
+    margin-bottom: 10px;
+  }
 }

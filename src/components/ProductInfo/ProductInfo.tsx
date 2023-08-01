@@ -1,3 +1,4 @@
+import React from 'react';
 import './ProductInfo.scss';
 
 interface Product {
@@ -11,13 +12,13 @@ interface ProductInfoProps {
   product: Product;
   quantity: number;
   onQuantityChange: (value: number) => void;
-  onRemoveFromCart?: any;
+  onRemoveFromCart?: (productId: number) => void;
   cartView: boolean;
-  onAddToCart?: any;
-  isAddedToCart?: any;
+  onAddToCart?: () => void;
+  isAddedToCart?: boolean;
 }
 
-const ProductInfo = ({
+const ProductInfo: React.FC<ProductInfoProps> = ({
   product,
   quantity,
   onQuantityChange,
@@ -26,15 +27,25 @@ const ProductInfo = ({
   onAddToCart,
   isAddedToCart,
 }: ProductInfoProps) => {
-  const parsePrice = (priceString: string) => {
+  /**
+   * Parses the price string and returns a numeric value
+   * @param priceString - The price string to be parsed
+   * @returns The numeric value of the price
+   */
+  const parsePrice = (priceString: string): number => {
     const numericString = priceString.replace(/€/g, '').replace(/,/g, '.');
     return parseFloat(numericString);
   };
 
+  /**
+   * Handles the change in quantity for the product
+   * @param e - The change event of the quantity select element
+   */
   const handleQuantityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     onQuantityChange(parseInt(e.target.value));
   };
 
+  // Calculate the total price for the product based on quantity
   const productPrice = (parsePrice(product.price) * quantity).toFixed(2);
 
   return (
@@ -62,19 +73,17 @@ const ProductInfo = ({
         {cartView ? (
           <button
             className="cart-product-button"
-            onClick={() => onRemoveFromCart(product.id)}
+            onClick={() => onRemoveFromCart?.(product.id)}
           >
             Entfernen
           </button>
         ) : (
-          !isAddedToCart && (
-            <button
-              className="cart-product-button"
-              onClick={() => onAddToCart()}
-            >
-              In den Warenkorb
-            </button>
-          )
+          <button
+            className={`cart-product-button ${isAddedToCart ? 'hidden' : ''}`}
+            onClick={() => onAddToCart?.()}
+          >
+            Warenkorb
+          </button>
         )}
       </div>
     </div>

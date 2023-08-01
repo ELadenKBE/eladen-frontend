@@ -1,6 +1,9 @@
+$product-grid-columns: 5;
+$product-grid-gap: 50px;
+
 .product-container {
   display: grid;
-  gap: 50px;
+  gap: $product-grid-gap;
   justify-items: center;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat($product-grid-columns, 1fr);
 }

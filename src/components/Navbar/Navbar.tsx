@@ -1,22 +1,19 @@
 import './Navbar.scss';
 import { Dispatch, SetStateAction } from 'react';
-import {
-  FiShoppingCart,
-  FiGlobe,
-  FiMoon,
-  FiUser,
-  FiMenu,
-} from 'react-icons/fi';
+import { FiShoppingCart, FiMenu } from 'react-icons/fi';
 import Searchbar from './Searchbar/Searchbar';
 import NavItem from './NavItem/NavItem';
 import { IconType } from 'react-icons';
 
+// Interface for the Navbar component props
 interface NavbarProps {
   isLoginFormRendered: boolean;
   setIsLoginFormRendered: Dispatch<SetStateAction<boolean>>;
   isSidebarRendered: boolean;
   setIsSidebarRendered: Dispatch<SetStateAction<boolean>>;
 }
+
+// Interface for each navigation item
 interface NavItemConfig {
   icon?: IconType;
   url?: string;
@@ -24,23 +21,25 @@ interface NavItemConfig {
   component?: React.ReactNode;
   classname: string;
 }
+
 /**
  * Renders a Navbar containing NavItems
  * @param isLoginFormRendered if the login form is rendered
- * @param setIsLoginFormRendered set if the loginform should be rendered or not 
+ * @param setIsLoginFormRendered set if the loginform should be rendered or not
  * @param isSidebarRendered if the sidebar is rendered
  * @param setIsSidebarRendered set if the sidebar should be rendered or not
-
  * @returns NavItems
  */
-const Navbar = ({
+const Navbar: React.FC<NavbarProps> = ({
   isLoginFormRendered,
   setIsLoginFormRendered,
   isSidebarRendered,
   setIsSidebarRendered,
-}: NavbarProps) => {
+}) => {
+  // Array of navigation items
   const navItems: NavItemConfig[] = [
     {
+      url: '/',
       icon: FiMenu,
       classname: 'sidebar',
     },
@@ -52,18 +51,6 @@ const Navbar = ({
     },
     { component: <Searchbar />, classname: 'searchbar' },
     {
-      icon: FiGlobe,
-      classname: 'language',
-    },
-    {
-      icon: FiMoon,
-      classname: 'darkmode',
-    },
-    {
-      icon: FiUser,
-      classname: 'login',
-    },
-    {
       icon: FiShoppingCart,
       url: '/cart',
       classname: 'cart',
@@ -73,7 +60,7 @@ const Navbar = ({
   return (
     <nav className="navbar">
       <div className="navbar-left">
-        {navItems.slice(0, 2).map((item, index) => (
+        {navItems.slice(0, 1).map((item, index) => (
           <NavItem
             key={index}
             icon={item.icon}

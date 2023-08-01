@@ -1,13 +1,29 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useMutation, gql } from '@apollo/client';
+import './Register.scss';
+
+interface FormState {
+  address: string;
+  firstname: string;
+  email: string;
+  image: string;
+  lastname: string;
+  role: number;
+  sub: string;
+  username: string;
+}
 
 interface RegisterProps {
-  onRegistrationComplete: any;
+  onRegistrationComplete: () => void;
   subToken: string;
 }
 
-const Register = ({ onRegistrationComplete, subToken }: RegisterProps) => {
-  const [formState, setFormState] = useState({
+const Register: React.FC<RegisterProps> = ({
+  onRegistrationComplete,
+  subToken,
+}: RegisterProps) => {
+  // Initialize form state using the FormState interface
+  const [formState, setFormState] = useState<FormState>({
     address: '',
     firstname: '',
     email: '',
@@ -18,6 +34,7 @@ const Register = ({ onRegistrationComplete, subToken }: RegisterProps) => {
     username: '',
   });
 
+  // Define the GraphQL mutation
   const CREATE_USER_MUTATION = gql`
     mutation CreateUserMutation(
       $address: String
@@ -50,103 +67,76 @@ const Register = ({ onRegistrationComplete, subToken }: RegisterProps) => {
       }
     }
   `;
+
+  // Use the useMutation hook to execute the mutation
   const [createUser] = useMutation(CREATE_USER_MUTATION, {
-    variables: {
-      address: formState.address,
-      email: formState.email,
-      firstname: formState.firstname,
-      image: formState.image,
-      lastname: formState.lastname,
-      role: formState.role,
-      sub: formState.sub,
-      username: formState.username,
-    },
+    variables: formState,
   });
+
+  // Handle form submit
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+    e.preventDefault();
+    createUser();
+    onRegistrationComplete();
+  };
+
+  // Handle input change
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const { name, value } = e.target;
+    setFormState((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
 
   return (
     <div>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          createUser();
-          onRegistrationComplete();
-        }}
-      >
-        <div className="flex flex-column mt3">
+      <form className="registration-form" onSubmit={handleSubmit}>
+        <div className="form-container">
           <input
-            className="mb2"
+            name="address"
             value={formState.address}
-            onChange={(e) =>
-              setFormState({
-                ...formState,
-                address: e.target.value,
-              })
-            }
+            onChange={handleInputChange}
             type="text"
-            placeholder="Address"
+            placeholder="Addresse"
           />
           <input
-            className="mb2"
+            name="email"
             value={formState.email}
-            onChange={(e) =>
-              setFormState({
-                ...formState,
-                email: e.target.value,
-              })
-            }
+            onChange={handleInputChange}
             type="text"
             placeholder="Email"
           />
           <input
-            className="mb2"
+            name="firstname"
             value={formState.firstname}
-            onChange={(e) =>
-              setFormState({
-                ...formState,
-                firstname: e.target.value,
-              })
-            }
+            onChange={handleInputChange}
             type="text"
-            placeholder="Firstname"
+            placeholder="Vorname"
           />
           <input
-            className="mb2"
+            name="image"
             value={formState.image}
-            onChange={(e) =>
-              setFormState({
-                ...formState,
-                image: e.target.value,
-              })
-            }
+            onChange={handleInputChange}
             type="text"
-            placeholder="Image"
+            placeholder="Bild"
           />
           <input
-            className="mb2"
+            name="lastname"
             value={formState.lastname}
-            onChange={(e) =>
-              setFormState({
-                ...formState,
-                lastname: e.target.value,
-              })
-            }
+            onChange={handleInputChange}
             type="text"
-            placeholder="Lastname"
+            placeholder="Nachname"
           />
           <input
-            className="mb2"
+            name="username"
             value={formState.username}
-            onChange={(e) =>
-              setFormState({
-                ...formState,
-                username: e.target.value,
-              })
-            }
+            onChange={handleInputChange}
             type="text"
-            placeholder="Username"
+            placeholder="Benutzername"
           />
+          <button type="submit">Registrieren</button>
         </div>
-        <button type="submit">Submit</button>
       </form>
     </div>
   );

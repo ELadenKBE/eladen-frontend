@@ -3,6 +3,7 @@ import './NavItem.scss';
 import { Link } from 'react-router-dom';
 import { Dispatch, SetStateAction } from 'react';
 
+// Interface for the NavItem component props
 interface NavItemProps {
   url?: string;
   icon?: IconType;
@@ -17,18 +18,18 @@ interface NavItemProps {
 
 /**
  * Renders a NavItem that can be another component, a link, or just an icon
- * @param url given when it redirects to another page
- * @param icon  given when it displays an icon
- * @param imgsrc  for the base64 data of the logo
- * @param classname the classname of the NavItem
- * @param component given when it renders a component
- * @param isLoginFormRendered if the login form is rendered
- * @param setIsLoginFormRendered set if the loginform should be rendered or not
- * @param isSidebarRendered if the sidebar is rendered
- * @param setIsSidebarRendered set if the sidebar should be rendered or not
+ * @param url - URL when it redirects to another page
+ * @param icon - Icon to display an icon
+ * @param imgsrc - Base64 data of the logo
+ * @param classname - Classname of the NavItem
+ * @param component - Component to render
+ * @param isLoginFormRendered - Whether the login form is rendered
+ * @param setIsLoginFormRendered - Function to set if the login form should be rendered or not
+ * @param isSidebarRendered - Whether the sidebar is rendered
+ * @param setIsSidebarRendered - Function to set if the sidebar should be rendered or not
  * @returns NavItem
  */
-const NavItem = ({
+const NavItem: React.FC<NavItemProps> = ({
   url,
   icon: Icon,
   imgsrc,
@@ -38,10 +39,10 @@ const NavItem = ({
   setIsLoginFormRendered,
   isSidebarRendered,
   setIsSidebarRendered,
-}: NavItemProps) => {
+}) => {
   /**
    * Handles a click on a NavItem and renders the corresponding component if there is one
-   * @param classname to match the correct component
+   * @param classname - Classname to match the correct component
    */
   const handleClick = (classname: string): void => {
     if (classname === 'sidebar') {
@@ -50,6 +51,7 @@ const NavItem = ({
       setIsLoginFormRendered(!isLoginFormRendered);
     }
   };
+
   return (
     <li
       onClick={() => handleClick(classname)}
@@ -61,12 +63,12 @@ const NavItem = ({
         </Link>
       ) : url ? (
         <Link to={url}>
-          {Icon && <Icon color="black" size={31} />}
+          {Icon && <Icon color="white" size={31} />}
           {component}
         </Link>
       ) : (
         <>
-          {Icon && <Icon color="black" size={31} />}
+          {Icon && <Icon color="white" size={31} />}
           {component}
         </>
       )}
