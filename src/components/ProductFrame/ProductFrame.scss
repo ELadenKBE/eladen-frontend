@@ -1,6 +1,6 @@
 .product-container {
-      display: grid;
-    gap: 50px;
-    justify-items: center;
-    grid-template-columns: repeat(5, min-content);
+  display: grid;
+  gap: 50px;
+  justify-items: center;
+  grid-template-columns: repeat(5, 1fr);
 }

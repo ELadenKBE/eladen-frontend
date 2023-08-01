@@ -41,7 +41,6 @@ interface Product {
 function App() {
   const [isLoginFormRendered, setLoginFormRendered] = useState<boolean>(false);
   const [isSidebarRendered, setIsSidebarRendered] = useState<boolean>(false);
-
   const [keycloak, setKeycloak] = useState<Keycloak.KeycloakInstance | null>(
     null,
   );
@@ -50,7 +49,9 @@ function App() {
   const [registrationCompleted, setRegistrationCompleted] =
     useState<boolean>(false); // State for registration completion
   const [cartProducts, setCartProducts] = useState<Product[]>([]);
-
+  const [availability, setAvailability] = useState(false);
+  const [priceRange, setPriceRange] = useState({ min: 0, max: 100000 });
+  const [isSorted, setIsSorted] = useState("ascending");
   const handleRemoveFromCart = (productId: number) => {
     setCartProducts(cartProducts.filter((product) => product.id !== productId));
   };
@@ -134,15 +135,36 @@ function App() {
                     subToken={subToken}
                     cartProducts={cartProducts}
                     setCartProducts={setCartProducts}
+                    priceRange={priceRange}
+                    setPriceRange={setPriceRange}
+                    availability={availability}
+                    setAvailability={setAvailability}
+                    isSorted={isSorted}
+                    setIsSorted={setIsSorted}
                   />
                 }
               />
-              <Route path="/search/:query" element={<Searchpage />} />
+              <Route
+                path="/search/:query"
+                element={
+                  <Searchpage
+                    cartProducts={cartProducts}
+                    setCartProducts={setCartProducts}
+                    priceRange={priceRange}
+                    availability={availability}
+                    setPriceRange={setPriceRange}
+                    setAvailability={setAvailability}
+                    isSorted={isSorted}
+                    setIsSorted={setIsSorted}
+                  />
+                }
+              />
               <Route
                 path="/cart"
                 element={
                   <Cartpage
                     cartProducts={cartProducts}
+                    setCartProducts={setCartProducts}
                     onRemoveFromCart={handleRemoveFromCart}
                   />
                 }

@@ -35,7 +35,7 @@ const Product = ({
     >
       {isHovered && !isAddedToCart && (
         <button className="add-to-cart-button" onClick={onAddToCart}>
-          Add to Cart
+          In den Warenkorb
         </button>
       )}
       <div className="product-info">

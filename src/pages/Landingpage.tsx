@@ -8,21 +8,43 @@ interface LandingpageProps {
   subToken: string;
   cartProducts: any;
   setCartProducts: any;
+  availability: any;
+  priceRange: any;
+  setPriceRange: any;
+  setAvailability: any;
+  isSorted:any;
+  setIsSorted:any;
 }
 
 const Landingpage = ({
   isLoginFormRendered,
-  isSidebarRendered,
   cartProducts,
   setCartProducts,
+  availability,
+  priceRange,
+  setPriceRange,
+  setAvailability,
+  isSorted,
+  setIsSorted
 }: LandingpageProps) => {
   return (
     <>
-      {isSidebarRendered && <Sidebar />}
+      <Sidebar
+        setAvailability={setAvailability}
+        setPriceRange={setPriceRange}
+        availability={availability}
+        priceRange={priceRange}
+        isSorted={isSorted}
+        setIsSorted={setIsSorted}
+      />
       {isLoginFormRendered && <LoginForm />}
       <ProductFrame
         cartProducts={cartProducts}
         setCartProducts={setCartProducts}
+        availability={availability}
+        priceRange={priceRange}
+        isSorted={isSorted}
+        setIsSorted={setIsSorted}
       />
     </>
   );

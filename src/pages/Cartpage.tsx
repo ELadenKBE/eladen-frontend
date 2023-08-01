@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './Cartpage.scss';
+import ProductInfo from '../components/ProductInfo/ProductInfo';
 
 interface Product {
   id: number;
@@ -11,9 +12,14 @@ interface Product {
 interface CartpageProps {
   cartProducts: Product[];
   onRemoveFromCart: (id: number) => void;
+  setCartProducts: any;
 }
 
-const Cartpage = ({ cartProducts, onRemoveFromCart }: CartpageProps) => {
+const Cartpage = ({
+  cartProducts,
+  onRemoveFromCart,
+  setCartProducts,
+}: CartpageProps) => {
   const parsePrice = (priceString: string) => {
     const numericString = priceString.replace(/€/g, '').replace(/,/g, '.');
     return parseFloat(numericString);
@@ -33,6 +39,9 @@ const Cartpage = ({ cartProducts, onRemoveFromCart }: CartpageProps) => {
     0,
   );
 
+  const handlePayment = () => {
+    setCartProducts([]);
+  };
   return (
     <div className="cartpage">
       <div className="cart-product-container">
@@ -41,41 +50,14 @@ const Cartpage = ({ cartProducts, onRemoveFromCart }: CartpageProps) => {
         </h2>
 
         {cartProducts.map((product, index) => (
-          <div key={product.id} className="cart-product">
-            <img
-              className="cart-product-image"
-              src={product.image}
-              alt={product.description}
-            />
-            <div className="cart-product-description">
-              {product.description}
-            </div>
-            <div className="cart-product-amount">
-              <select
-                defaultValue="1"
-                onChange={(e) =>
-                  handleQuantityChange(index, parseInt(e.target.value))
-                }
-              >
-                {[...Array(10).keys()].map((value) => (
-                  <option key={value + 1} value={value + 1}>
-                    {value + 1}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="cart-product-price-remove-container">
-              <div className="cart-product-price">
-                {(parsePrice(product.price) * quantity[index]).toFixed(2)}
-              </div>
-              <button
-                className="cart-product-remove"
-                onClick={() => onRemoveFromCart(product.id)}
-              >
-                Entfernen
-              </button>
-            </div>
-          </div>
+          <ProductInfo
+            key={product.id}
+            product={product}
+            quantity={quantity[index]}
+            onQuantityChange={(value) => handleQuantityChange(index, value)}
+            onRemoveFromCart={onRemoveFromCart}
+            cartView={true}
+          />
         ))}
       </div>
       <div className="cart-checkout">
@@ -83,7 +65,9 @@ const Cartpage = ({ cartProducts, onRemoveFromCart }: CartpageProps) => {
         <p className="cart-total-text">
           Total: {'\n'}€{totalPrice.toFixed(2)}
         </p>
-        <button className="checkout-button">Jetzt bezahlen</button>
+        <button className="checkout-button" onClick={handlePayment}>
+          Jetzt bezahlen
+        </button>
       </div>
     </div>
   );

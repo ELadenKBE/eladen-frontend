@@ -1,8 +1,15 @@
-import { useEffect } from 'react';
 import Product from './Product/Product';
 import './ProductFrame.scss';
 import productsJson from './products.json';
-interface ProductFrameProps {}
+
+interface ProductFrameProps {
+  cartProducts: any;
+  setCartProducts: any;
+  priceRange: any;
+  availability: any;
+  isSorted: string; // Can be 'ascending' or 'descending'
+  setIsSorted: (value: string) => void;
+}
 
 interface Product {
   id: number;
@@ -11,56 +18,46 @@ interface Product {
   image: string;
 }
 
-interface ProductFrameProps {
-  cartProducts: any;
-  setCartProducts: any;
-}
-
-const ProductFrame = ({ cartProducts, setCartProducts }: ProductFrameProps) => {
+const ProductFrame = ({
+  cartProducts,
+  setCartProducts,
+  priceRange,
+  isSorted,
+}: ProductFrameProps) => {
   const handleAddToCart = (product: Product) => {
     setCartProducts([...cartProducts, product]);
   };
 
-  useEffect(() => {
-    console.log(cartProducts);
-  }, [cartProducts]);
-  // Mock Data (Replace this with your actual data)
+  const filteredProducts = productsJson.filter((product) => {
+    const productPrice = parseFloat(
+      product.price.replace(/€/g, '').replace(/,/g, '.'),
+    );
 
-  // Comment out the useEffect block since we're using static data
-  // useEffect(() => {
-  //   fetch('http://localhost:8000/graphql/', {
-  //     method: 'POST',
-  //     headers: { 'Content-Type': 'application/json' },
-  //     body: JSON.stringify({ query: GET_PRODUCTS }),
-  //   })
-  //     .then((response) => response.json())
-  //     .then(({ data, errors }) => {
-  //       setLoading(false);
-  //       if (errors) {
-  //         setError(errors[0].message);
-  //         return;
-  //       }
+    if (priceRange.min === null || priceRange.max === null) {
+      // If either min or max is null, do not apply price filtering
+      return true;
+    }
 
-  //       const fetchedProducts: Product[] = data.goods.map((product: any) => ({
-  //         id: product.id,
-  //         description: product.description,
-  //         price: product.price,
-  //         image: product.url,
-  //       }));
+    return productPrice >= priceRange.min && productPrice <= priceRange.max;
+  });
 
-  //       setProducts(fetchedProducts);
-  //     })
-  //     .catch((error) => {
-  //       setLoading(false);
-  //       setError(error.message);
-  //     });
-  // }, []);
+  // Sort products based on the isSorted state
+  const sortedProducts = filteredProducts.slice().sort((a, b) => {
+    const priceA = parseFloat(a.price.replace(/€/g, '').replace(/,/g, '.'));
+    const priceB = parseFloat(b.price.replace(/€/g, '').replace(/,/g, '.'));
 
-  // Use the mock data instead of fetched data
+    if (isSorted === 'ascending') {
+      return priceA - priceB;
+    } else if (isSorted === 'descending') {
+      return priceB - priceA;
+    } else {
+      return 0; // If isSorted has an invalid value, do not change the order
+    }
+  });
 
   return (
     <div className="product-container">
-      {productsJson.map((product) => (
+      {sortedProducts.map((product) => (
         <Product
           key={product.id}
           id={product.id}
@@ -76,4 +73,5 @@ const ProductFrame = ({ cartProducts, setCartProducts }: ProductFrameProps) => {
     </div>
   );
 };
+
 export default ProductFrame;

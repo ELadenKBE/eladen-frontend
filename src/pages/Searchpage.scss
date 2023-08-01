@@ -1,0 +1,10 @@
+.searchpage {
+  display: flex;
+
+  .searchpage-products {
+    display: grid;
+    gap: 50px;
+    justify-items: center;
+    grid-template-columns: repeat(3,1fr);
+  }
+}

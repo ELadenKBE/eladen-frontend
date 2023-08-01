@@ -1,5 +1,14 @@
 .sidebar {
-  width: 303px;
-  height: 402px;
-  border: 1px solid #f1ebff;
+  .sidebar-prices,
+  .sidebar-sorting {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    label {
+      margin-top: 5px;
+      align-self: flex-start;
+    }
+  }
 }
