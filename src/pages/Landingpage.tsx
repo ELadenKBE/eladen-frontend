@@ -6,23 +6,24 @@ interface LandingpageProps {
   isLoginFormRendered: boolean;
   isSidebarRendered: boolean;
   subToken: string;
+  cartProducts: any;
+  setCartProducts: any;
 }
 
 const Landingpage = ({
   isLoginFormRendered,
   isSidebarRendered,
-  
+  cartProducts,
+  setCartProducts,
 }: LandingpageProps) => {
-  
-
-  
-
   return (
     <>
       {isSidebarRendered && <Sidebar />}
       {isLoginFormRendered && <LoginForm />}
-        <ProductFrame />
-  
+      <ProductFrame
+        cartProducts={cartProducts}
+        setCartProducts={setCartProducts}
+      />
     </>
   );
 };

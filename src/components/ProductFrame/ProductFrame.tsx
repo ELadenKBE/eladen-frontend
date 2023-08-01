@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Product from './Product/Product';
 import './ProductFrame.scss';
 import productsJson from './products.json';
@@ -11,9 +11,12 @@ interface Product {
   image: string;
 }
 
-const ProductFrame = ({}: ProductFrameProps) => {
-  const [cartProducts, setCartProducts] = useState<Product[]>([]);
+interface ProductFrameProps {
+  cartProducts: any;
+  setCartProducts: any;
+}
 
+const ProductFrame = ({ cartProducts, setCartProducts }: ProductFrameProps) => {
   const handleAddToCart = (product: Product) => {
     setCartProducts([...cartProducts, product]);
   };
@@ -65,7 +68,9 @@ const ProductFrame = ({}: ProductFrameProps) => {
           price={product.price}
           image={product.image}
           onAddToCart={() => handleAddToCart(product)}
-          isAddedToCart={cartProducts.some((item) => item.id === product.id)}
+          isAddedToCart={cartProducts.some(
+            (item: Product) => item.id === product.id,
+          )}
         />
       ))}
     </div>

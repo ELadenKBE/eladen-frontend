@@ -17,6 +17,7 @@ import Cartpage from './pages/Cartpage';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';
 import Register from './components/Register/Register';
+import Product from './components/ProductFrame/Product/Product';
 
 // Define a type for the initialization options
 type KeycloakConfig = {
@@ -31,18 +32,28 @@ const keycloakConfig: KeycloakConfig = {
   clientId: 'eladen-client',
 };
 
+interface Product {
+  id: number;
+  description: string;
+  price: string;
+  image: string;
+}
 function App() {
   const [isLoginFormRendered, setLoginFormRendered] = useState<boolean>(false);
   const [isSidebarRendered, setIsSidebarRendered] = useState<boolean>(false);
 
   const [keycloak, setKeycloak] = useState<Keycloak.KeycloakInstance | null>(
-    null
+    null,
   );
   const [authenticated, setAuthenticated] = useState<boolean>(false);
   const [subToken, setSubToken] = useState<string>('');
   const [registrationCompleted, setRegistrationCompleted] =
     useState<boolean>(false); // State for registration completion
+  const [cartProducts, setCartProducts] = useState<Product[]>([]);
 
+  const handleRemoveFromCart = (productId: number) => {
+    setCartProducts(cartProducts.filter((product) => product.id !== productId));
+  };
   const parseJwt = (token: any) => {
     try {
       return JSON.parse(atob(token.split('.')[1]));
@@ -121,11 +132,21 @@ function App() {
                     isLoginFormRendered={isLoginFormRendered}
                     isSidebarRendered={isSidebarRendered}
                     subToken={subToken}
+                    cartProducts={cartProducts}
+                    setCartProducts={setCartProducts}
                   />
                 }
               />
               <Route path="/search/:query" element={<Searchpage />} />
-              <Route path="/cart" element={<Cartpage />} />
+              <Route
+                path="/cart"
+                element={
+                  <Cartpage
+                    cartProducts={cartProducts}
+                    onRemoveFromCart={handleRemoveFromCart}
+                  />
+                }
+              />
             </Routes>
           </div>
           <Footer
