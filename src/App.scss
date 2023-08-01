@@ -7,5 +7,8 @@
   .content-container {
     flex: 1;
     margin: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
