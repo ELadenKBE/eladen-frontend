@@ -9,7 +9,6 @@ import Searchpage from './pages/Searchpage';
 import Cartpage from './pages/Cartpage';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';
-import Register from './components/Register/Register';
 import Product from './components/ProductFrame/Product/Product';
 import { setContext } from '@apollo/client/link/context';
 import {
@@ -48,7 +47,7 @@ function App(): JSX.Element {
   const [keycloak, setKeycloak] = useState<Keycloak | null>(null);
   const [authenticated, setAuthenticated] = useState<boolean>(false);
   const [subToken, setSubToken] = useState<string>('');
-  const [registrationCompleted, setRegistrationCompleted] =
+  const [_registrationCompleted, _setRegistrationCompleted] =
     useState<boolean>(false);
   const [cartProducts, setCartProducts] = useState<Product[]>([]);
   const [availability, setAvailability] = useState<boolean>(false);
@@ -121,23 +120,12 @@ function App(): JSX.Element {
     return <p>Initialisiere Apollo client...</p>;
   }
 
-  //Check if the registration form was submitted
-  const handleRegistrationComplete = () => {
-    setRegistrationCompleted(true);
-  };
+  // //Check if the registration form was submitted
+  // const handleRegistrationComplete = () => {
+  //   setRegistrationCompleted(true);
+  // };
 
-  if (keycloak && authenticated && !registrationCompleted) {
-    return (
-      <div className="app-container">
-        <Register
-          onRegistrationComplete={handleRegistrationComplete}
-          subToken={subToken}
-        />
-      </div>
-    );
-  }
-
-  if (keycloak && authenticated && registrationCompleted) {
+  if (keycloak && authenticated) {
     return (
       <ApolloProvider client={client}>
         <div className="app-container">

@@ -1,5 +1,4 @@
 import React, { Dispatch, SetStateAction } from 'react';
-import LoginForm from '../Navbar/LoginForm/LoginForm';
 import './Footer.scss';
 import FooterItem from './FooterItem/FooterItem';
 
@@ -42,20 +41,6 @@ const Footer: React.FC<FooterProps> = ({
 
   // Array of footer items
   const footerItems: IFooterItem[] = [
-    {
-      label: 'Einloggen',
-      component: <LoginForm />,
-      externalLink: false,
-      onClick: () => handleItemClick('login'),
-      classname: 'footer-login',
-    },
-    {
-      label: 'Registrieren',
-      component: <LoginForm />,
-      externalLink: false,
-      onClick: () => handleItemClick('login'),
-      classname: 'footer-register',
-    },
     {
       label: 'Warenkorb',
       url: '/cart',
