@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import './Cartpage.scss';
 import ProductInfo from '../components/ProductInfo/ProductInfo';
+import { gql, useMutation } from '@apollo/client';
 
 // Define the type for the product
 interface Product {
@@ -22,6 +23,8 @@ const Cartpage: React.FC<CartpageProps> = ({
   onRemoveFromCart,
   setCartProducts,
 }: CartpageProps) => {
+  // Define the mutation query
+
   // Function to parse the price from a string
   const parsePrice = (priceString: string): number => {
     const numericString = priceString.replace(/€/g, '').replace(/,/g, '.');
@@ -45,9 +48,53 @@ const Cartpage: React.FC<CartpageProps> = ({
     0,
   );
 
+  //Get current timestamp in correct format for the mutation
+  const getCurrentTimestamp = (): string => {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
+  };
+
+  const currentTimestamp = getCurrentTimestamp();
+  //Mutation to create the order
+  const CREATE_ORDER_MUTATION = gql`
+    mutation CreateOrder($timeOfOrder: String, $deliveryAddress: String) {
+      createOrder(
+        timeOfOrder: $timeOfOrder
+        deliveryAddress: $deliveryAddress
+      ) {
+        id
+        paymentStatus
+      }
+    }
+  `;
+  const [createOrderMutation] = useMutation(CREATE_ORDER_MUTATION);
+
   // Function to handle the payment and clear the cart
-  const handlePayment = (): void => {
-    setCartProducts([]);
+  const handlePayment = async (): Promise<void> => {
+    try {
+      // Execute the mutation with the specified variables
+      const { data } = await createOrderMutation({
+        variables: {
+          timeOfOrder: currentTimestamp, // Replace with your desired time
+          deliveryAddress: 'irgendwohalt', // Replace with your desired address
+        },
+      });
+
+      // You can process the response data if needed
+      console.log(data);
+
+      // Clear the cart after successful payment
+      setCartProducts([]);
+    } catch (error) {
+      // Handle the error if the mutation fails
+      console.error('Failed to create the order:', error);
+    }
   };
 
   return (

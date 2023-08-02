@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Product from './Product/Product';
 import './ProductFrame.scss';
-import productsJson from './products.json';
+import { gql, useMutation, useQuery } from '@apollo/client';
 
 interface ProductFrameProps {
   cartProducts: Product[];
@@ -19,35 +19,86 @@ interface Product {
   image: string;
 }
 
+const GET_PRODUCTS_QUERY = gql`
+  {
+    goods {
+      id
+      title
+      description
+      category {
+        id
+      }
+      price
+      image
+      manufacturer
+      amount
+    }
+  }
+`;
+
+const ADD_GOOD_TO_CART_MUTATION = gql`
+  mutation AddGoodToCart($goodId: Int) {
+    addGoodToCart(goodId: $goodId) {
+      id
+    }
+  }
+`;
+
 const ProductFrame: React.FC<ProductFrameProps> = ({
   cartProducts,
   setCartProducts,
   priceRange,
   isSorted,
 }: ProductFrameProps) => {
-  /**
-   * Adds a product to the cart
-   * @param product The product to be added to the cart
-   */
-  const handleAddToCart = (product: Product) => {
-    setCartProducts([...cartProducts, product]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const { loading, error, data } = useQuery(GET_PRODUCTS_QUERY);
+
+  useEffect(() => {
+    if (sessionStorage.getItem('products')) {
+      setProducts(JSON.parse(sessionStorage.getItem('products') as string));
+    } else {
+      if (!loading && !error && data) {
+        sessionStorage.setItem('products', JSON.stringify(data.goods));
+        setProducts(data.goods);
+      }
+    }
+  }, [loading, error, data]);
+
+  // Define the mutation function and its loading, error, and data states
+  const [addToCartMutation] = useMutation(ADD_GOOD_TO_CART_MUTATION);
+  // Function to handle adding a product to the cart with the mutation invocation
+  const handleAddToCart = async (product: Product) => {
+    try {
+      // Execute the mutation with the product's id
+      const { data } = await addToCartMutation({
+        variables: {
+          goodId: Number(product.id),
+        },
+      });
+
+      // You can process the response data if needed
+      console.log(data);
+
+      // Update the cart products state with the newly added product
+      setCartProducts([...cartProducts, product]);
+    } catch (error) {
+      // Handle the error if the mutation fails
+      console.error('Failed to add the product to the cart:', error);
+    }
   };
 
-  // Filter products based on the price range
-  const filteredProducts = productsJson.filter((product) => {
+  const filteredProducts = products.filter((product) => {
     const productPrice = parseFloat(
       product.price.replace(/€/g, '').replace(/,/g, '.'),
     );
 
     if (priceRange.min === null || priceRange.max === null) {
-      // If either min or max is null, do not apply price filtering
       return true;
     }
 
     return productPrice >= priceRange.min && productPrice <= priceRange.max;
   });
 
-  // Sort products based on the isSorted state
   const sortedProducts = filteredProducts.slice().sort((a, b) => {
     const priceA = parseFloat(a.price.replace(/€/g, '').replace(/,/g, '.'));
     const priceB = parseFloat(b.price.replace(/€/g, '').replace(/,/g, '.'));
@@ -57,9 +108,12 @@ const ProductFrame: React.FC<ProductFrameProps> = ({
     } else if (isSorted === 'descending') {
       return priceB - priceA;
     } else {
-      return 0; // If isSorted has an invalid value, do not change the order
+      return 0;
     }
   });
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error :(</p>;
 
   return (
     <div className="product-container">

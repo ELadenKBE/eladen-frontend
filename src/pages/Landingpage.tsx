@@ -1,6 +1,9 @@
+import { gql, useMutation } from '@apollo/client';
 import LoginForm from '../components/Navbar/LoginForm/LoginForm';
 import Sidebar from '../components/Navbar/Sidebar/Sidebar';
 import ProductFrame from '../components/ProductFrame/ProductFrame';
+import { useEffect, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 interface Product {
   id: number;
@@ -39,7 +42,53 @@ const Landingpage: React.FC<LandingpageProps> = ({
   setAvailability,
   isSorted,
   setIsSorted,
+  subToken,
 }: LandingpageProps) => {
+  const CREATE_USER_MUTATION = gql`
+    mutation CreateUser(
+      $username: String!
+      $email: String!
+      $role: Int!
+      $sub: String!
+    ) {
+      createUser(username: $username, email: $email, role: $role, sub: $sub) {
+        id
+        username
+        email
+      }
+    }
+  `;
+  const [_loading, setLoading] = useState(false);
+  const [_error, setError] = useState(null);
+  const [_data, setData] = useState(null);
+
+  const [createUserMutation] = useMutation(CREATE_USER_MUTATION);
+  useEffect(() => {
+    const executeMutation = async () => {
+      if (!sessionStorage.getItem('mutationCalled')) {
+        try {
+          setLoading(true);
+          const { data } = await createUserMutation({
+            variables: {
+              username: uuidv4(),
+              email: 'email@gmail.com',
+              role: 1,
+              sub: subToken,
+            },
+          });
+          setData(data.createUser);
+          sessionStorage.setItem('mutationCalled', 'true');
+          setLoading(false);
+        } catch (error: any) {
+          setError(error);
+          setLoading(false);
+        }
+      }
+    };
+
+    executeMutation();
+  }, [createUserMutation]);
+
   return (
     <>
       {/* Sidebar component */}

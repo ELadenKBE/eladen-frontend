@@ -1,8 +1,8 @@
 import { useParams } from 'react-router-dom';
-import productsJson from '../components/ProductFrame/products.json';
 import './Searchpage.scss';
 import ProductInfo from '../components/ProductInfo/ProductInfo';
 import Sidebar from '../components/Navbar/Sidebar/Sidebar';
+import { gql, useMutation } from '@apollo/client';
 
 interface Product {
   id: number;
@@ -37,15 +37,48 @@ const Searchpage: React.FC<SearchpageProps> = ({
   setIsSorted,
 }: SearchpageProps) => {
   // Function to handle adding a product to the cart
-  const handleAddToCart = (product: Product) => {
-    setCartProducts([...cartProducts, product]);
+
+  const ADD_GOOD_TO_CART_MUTATION = gql`
+    mutation AddGoodToCart($goodId: Int) {
+      addGoodToCart(goodId: $goodId) {
+        id
+      }
+    }
+  `;
+
+  // Define the mutation function and its loading, error, and data states
+  const [addToCartMutation] = useMutation(ADD_GOOD_TO_CART_MUTATION);
+
+  // Function to handle adding a product to the cart with the mutation invocation
+  const handleAddToCart = async (product: Product) => {
+    try {
+      // Execute the mutation with the product's id
+      const { data } = await addToCartMutation({
+        variables: {
+          goodId: Number(product.id),
+        },
+      });
+
+      // You can process the response data if needed
+      console.log(data);
+
+      // Update the cart products state with the newly added product
+      setCartProducts([...cartProducts, product]);
+    } catch (error) {
+      // Handle the error if the mutation fails
+      console.error('Failed to add the product to the cart:', error);
+    }
   };
 
   const { query } = useParams();
-  const searchTerm = query?.toLowerCase() || ''; // Convert the search term to lowercase for case-insensitive matching.
+  const searchTerm = query?.toLowerCase() || '';
+
+  // Retrieve products from sessionStorage and parse the JSON
+  const storedProducts = sessionStorage.getItem('products');
+  const products: Product[] = storedProducts ? JSON.parse(storedProducts) : [];
 
   // Filter products based on the search term and price range
-  const filteredProducts = productsJson.filter((product: Product) => {
+  const filteredProducts = products.filter((product: Product) => {
     const productPrice = parseFloat(
       product.price.replace(/€/g, '').replace(/,/g, '.'),
     );
@@ -55,7 +88,6 @@ const Searchpage: React.FC<SearchpageProps> = ({
       .includes(searchTerm);
 
     if (priceRange.min === null || priceRange.max === null) {
-      // If either min or max is null, do not apply price filtering
       return searchTermMatches;
     }
 
@@ -75,7 +107,7 @@ const Searchpage: React.FC<SearchpageProps> = ({
     } else if (isSorted === 'descending') {
       return priceB - priceA;
     } else {
-      return 0; // If isSorted has an invalid value, do not change the order
+      return 0;
     }
   });
 

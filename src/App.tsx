@@ -1,12 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import {
-  ApolloClient,
-  ApolloProvider,
-  InMemoryCache,
-  createHttpLink,
-} from '@apollo/client';
-import { setContext } from '@apollo/client/link/context';
 import Keycloak from 'keycloak-js';
 import './App.scss';
 
@@ -18,8 +11,14 @@ import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';
 import Register from './components/Register/Register';
 import Product from './components/ProductFrame/Product/Product';
+import { setContext } from '@apollo/client/link/context';
+import {
+  ApolloClient,
+  ApolloProvider,
+  InMemoryCache,
+  createHttpLink,
+} from '@apollo/client';
 
-// Define a type for the initialization options
 interface KeycloakConfig {
   url: string;
   realm: string;
@@ -73,6 +72,7 @@ function App(): JSX.Element {
     }
   };
 
+  //Get token from keycloak
   useEffect(() => {
     const kc = new Keycloak(keycloakConfig);
     kc.init({ onLoad: 'login-required' })
@@ -87,40 +87,53 @@ function App(): JSX.Element {
       });
   }, []);
 
+  const [client, setClient] = useState<ApolloClient<any> | null>(null);
+
+  //Create apollo client for the ApolloProvider after we got back the jwt token
+  useEffect(() => {
+    if (subToken) {
+      const authLink = setContext((_, { headers }) => {
+        // return the headers to the context so httpLink can read them
+        return {
+          headers: {
+            ...headers,
+            AUTHORIZATION: `sub ${subToken}`,
+          },
+        };
+      });
+
+      const httpLink = createHttpLink({
+        uri: 'http://localhost:8000/graphql/',
+      });
+
+      const newClient = new ApolloClient({
+        link: authLink.concat(httpLink),
+        cache: new InMemoryCache({
+          addTypename: false,
+        }),
+      });
+
+      setClient(newClient);
+    }
+  }, [subToken]);
+
+  if (!client) {
+    return <p>Initialisiere Apollo client...</p>;
+  }
+
+  //Check if the registration form was submitted
   const handleRegistrationComplete = () => {
     setRegistrationCompleted(true);
   };
 
-  // Apollo client setup
-  const httpLink = createHttpLink({
-    uri: 'http://localhost:8000/graphql/', // GraphQL-Server-Endpunkt
-  });
-
-  const authLink = setContext((_, { headers }) => {
-    // return the headers to the context so httpLink can read them
-    return {
-      headers: {
-        ...headers,
-        AUTHORIZATION: `sub ${subToken}`,
-      },
-    };
-  });
-
-  const client = new ApolloClient({
-    link: authLink.concat(httpLink),
-    cache: new InMemoryCache(),
-  });
-
   if (keycloak && authenticated && !registrationCompleted) {
     return (
-      <ApolloProvider client={client}>
-        <div className="app-container">
-          <Register
-            onRegistrationComplete={handleRegistrationComplete}
-            subToken={subToken}
-          />
-        </div>
-      </ApolloProvider>
+      <div className="app-container">
+        <Register
+          onRegistrationComplete={handleRegistrationComplete}
+          subToken={subToken}
+        />
+      </div>
     );
   }
 

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useMutation, gql } from '@apollo/client';
 import './Register.scss';
 
 interface FormState {
@@ -34,49 +33,9 @@ const Register: React.FC<RegisterProps> = ({
     username: '',
   });
 
-  // Define the GraphQL mutation
-  const CREATE_USER_MUTATION = gql`
-    mutation CreateUserMutation(
-      $address: String
-      $email: String
-      $firstname: String
-      $image: String
-      $lastname: String
-      $role: Int!
-      $sub: String!
-      $username: String!
-    ) {
-      createUser(
-        address: $address
-        email: $email
-        firstname: $firstname
-        image: $image
-        lastname: $lastname
-        role: $role
-        sub: $sub
-        username: $username
-      ) {
-        address
-        email
-        firstname
-        image
-        lastname
-        role
-        sub
-        username
-      }
-    }
-  `;
-
-  // Use the useMutation hook to execute the mutation
-  const [createUser] = useMutation(CREATE_USER_MUTATION, {
-    variables: formState,
-  });
-
   // Handle form submit
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    createUser();
     onRegistrationComplete();
   };
 

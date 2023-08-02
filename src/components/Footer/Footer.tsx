@@ -65,7 +65,7 @@ const Footer: React.FC<FooterProps> = ({
     },
     {
       label: 'Unser Github',
-      url: 'https://github.com/your-github-repo',
+      url: 'https://github.com/ELadenKBE',
       externalLink: true,
       onClick: () => handleItemClick(null),
       classname: 'footer-github',
