@@ -2,6 +2,7 @@ import { useState } from 'react';
 import './Cartpage.scss';
 import ProductInfo from '../components/ProductInfo/ProductInfo';
 import { gql, useMutation } from '@apollo/client';
+import PaymentStatus from '../components/PaymentStatus/PaymentStatus';
 
 // Define the type for the product
 interface Product {
@@ -33,6 +34,7 @@ const Cartpage: React.FC<CartpageProps> = ({
 
   // State to manage the quantity of each product in the cart
   const [quantity, setQuantity] = useState<number[]>(cartProducts.map(() => 1));
+  const [paid, setPaid] = useState<boolean>(false);
 
   // Function to handle quantity change for a product
   const handleQuantityChange = (index: number, value: number): void => {
@@ -79,18 +81,15 @@ const Cartpage: React.FC<CartpageProps> = ({
   const handlePayment = async (): Promise<void> => {
     try {
       // Execute the mutation with the specified variables
-      const { data } = await createOrderMutation({
+      const {} = await createOrderMutation({
         variables: {
-          timeOfOrder: currentTimestamp, // Replace with your desired time
-          deliveryAddress: 'irgendwohalt', // Replace with your desired address
+          timeOfOrder: currentTimestamp,
+          deliveryAddress: 'irgendwohalt',
         },
       });
-
-      // You can process the response data if needed
-      console.log(data);
-
       // Clear the cart after successful payment
       setCartProducts([]);
+      setPaid(true);
     } catch (error) {
       // Handle the error if the mutation fails
       console.error('Failed to create the order:', error);
@@ -123,6 +122,7 @@ const Cartpage: React.FC<CartpageProps> = ({
         <button className="checkout-button" onClick={handlePayment}>
           Jetzt bezahlen
         </button>
+        {paid && <PaymentStatus hasCheckedOut={paid} />}
       </div>
     </div>
   );
